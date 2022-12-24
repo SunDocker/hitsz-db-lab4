@@ -1,36 +1,50 @@
 package cn.edu.hitsz;
 
+import cn.edu.hitsz.utils.JdbcUtil;
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author SunDocker
  */
-public class Main implements Servlet {
-
+@WebServlet("/main")
+public class Main extends HttpServlet {
     @Override
-    public void init(ServletConfig servletConfig) throws ServletException {
-
-    }
-
-    @Override
-    public ServletConfig getServletConfig() {
-        return null;
-    }
-
-    @Override
-    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("Hello Servlet !");
-    }
 
-    @Override
-    public String getServletInfo() {
-        return "";
-    }
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-    @Override
-    public void destroy() {
+        try {
+            conn = JdbcUtil.getConnection();
+            String sql = "select * from volunteer";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                System.out.println(rs.getString("account")
+                        + "'s nickname: "
+                        + rs.getString("nickname"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(conn, ps, rs);
+        }
 
+        PrintWriter out = resp.getWriter();
+        resp.setContentType("text/txt");
+        out.println("HttpServlet doGet !");
     }
 }
