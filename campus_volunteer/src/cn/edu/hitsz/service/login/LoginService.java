@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +18,8 @@ import java.util.List;
  * @author SunDocker
  */
 public abstract class LoginService extends HttpServlet {
+
+    public static final String LOGIN_ERROR_PAGE = "/err/login_err.html";
     protected String userTable;
 
     @Override
@@ -29,17 +32,21 @@ public abstract class LoginService extends HttpServlet {
 
         PreparedStatement ps = JDBCUtil.prepareStatement(sql);
         assert ps != null;
+
         JDBCUtil.setPreStateString(ps, 1, account);
         JDBCUtil.setPreStateString(ps, 2, password);
 
         ResultSet rs = JDBCUtil.executePreStateQuery(ps);
         assert rs != null;
-        List<String> nickname = JDBCUtil.getResSetStrings(rs, "nickname");
-        List<String> regTime = JDBCUtil.getResSetStrings(rs, "register_time");
 
-        System.out.println("table: " + userTable);
-        System.out.println("nickname: " + nickname.get(0));
-        System.out.println("register time: " + regTime.get(0));
+        String contextPath = getServletContext().getContextPath();
+        if (JDBCUtil.isResSetNull(rs)) {
+            resp.sendRedirect(contextPath + LOGIN_ERROR_PAGE);
+        } else {
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("text/txt");
+            out.println("登录成功");
+        }
 
         JDBCUtil.close(null, ps, rs);
     }

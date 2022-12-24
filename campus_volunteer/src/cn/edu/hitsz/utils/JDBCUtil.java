@@ -113,4 +113,16 @@ public class JDBCUtil {
         }
         return res;
     }
+
+    public static boolean isResSetNull(ResultSet rs) {
+        boolean isNull = false;
+        try {
+            rs.beforeFirst();
+            isNull = !rs.next();
+            rs.previous();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isNull;
+    }
 }
