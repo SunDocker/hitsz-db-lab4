@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>志愿活动展示</title>
+    <style>
+        #container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <table>
+        <thead>
+        <tr>
+            <th>志愿活动名</th>
+            <th>志愿活动类别</th>
+            <th>志愿活动地点</th>
+            <th>志愿活动开始时间</th>
+            <th>志愿活动结束时间</th>
+            <th>志愿活动主要内容与要求</th>
+            <th>志愿活动所需人数</th>
+            <th>志愿活动管理员</th>
+        </tr>
+        </thead>
+        <tbody id="activity_list">
+        <tr>
+            <td>元旦晚会道具组</td>
+            <td>文体娱乐类</td>
+            <td>F校区操场</td>
+            <td>2022-12-31 16:00:45</td>
+            <td>2022-12-31 21:30:30</td>
+            <td>给节目演员搬道具</td>
+            <td>30</td>
+            <td>root</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+<script>
+    const xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const jsonStr = xhr.responseText
+            const activities = JSON.parse(jsonStr)
+            console.log(activities)
+            const listObj = document.getElementById("activity_list")
+            activities.forEach(activity => {
+                let rowStr = `<tr>`
+                for (const attr in activity) {
+                    rowStr += `<td>${activity[attr]}</td>`
+                }
+                rowStr += `</tr>`
+                listObj.innerHTML += rowStr
+            });
+        }
+    }
+    xhr.open("GET", "list")
+    xhr.send()
+</script>
+</html>

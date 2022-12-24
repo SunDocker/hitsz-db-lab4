@@ -1,5 +1,8 @@
 package cn.edu.hitsz.utils;
 
+import cn.edu.hitsz.entity.VolunteerActivity;
+
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,5 +136,22 @@ public class JDBCUtil {
             e.printStackTrace();
         }
         return isNull;
+    }
+
+    public static <T> List<T> getResSetIntoList(ResultSet rs, Class<T> elemClass) {
+        List<T> list = new ArrayList<>();
+        try {
+            while (rs.next()) {
+                T elem = elemClass.newInstance();
+                for (Field field : elemClass.getFields()) {
+                    field.set(elem, rs.getString(field.getName()));
+                }
+                list.add(elem);
+            }
+            rs.beforeFirst();
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

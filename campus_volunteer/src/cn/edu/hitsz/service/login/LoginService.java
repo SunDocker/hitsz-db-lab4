@@ -47,7 +47,7 @@ public abstract class LoginService extends HttpServlet {
         } else {
             HttpSession session = req.getSession();
             session.setAttribute("login", getUserTable());
-//            resp.sendRedirect();
+            resp.sendRedirect(contextPath + "/activity/volunteer_activity_list.html");
         }
         JDBCUtil.close(null, ps, rs);
     }
