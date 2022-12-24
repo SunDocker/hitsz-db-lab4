@@ -1,16 +1,14 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>志愿者登录界面</title>
+    <title>首页/志愿者登录</title>
     <meta charset="UTF-8">
     <style>
-        form {
+        #container {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%,-50%);
-        }
-        table {
-            border: 1px solid black;
         }
         td {
             text-align: right;
@@ -18,24 +16,44 @@
         #submit {
             text-align: center;
         }
+        input[type=submit] {
+            width: fit-content;
+        }
+        h2,h3 {
+            text-align: center;
+        }
+        #others {
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-<form action="volLogin" method="post">
-    <table>
-        <tr>
-            <td>志愿者账号：</td>
-            <td><input type="text" name="account"/></td>
-        </tr>
-        <tr>
-            <td>密码：</td>
-            <td><input type="password" name="password"/></td>
-        </tr>
-        <tr>
-            <td id="submit" colspan="2"><input type="submit" value="登录"/></td>
-        </tr>
-    </table>
-</form>
+<div id="container">
+    <h2>校园志愿者招募平台</h2>
+    <h3>志愿者登录</h3>
+    <form action="login/volunteer" method="post">
+        <table>
+            <tr>
+                <td>志愿者账号：</td>
+                <td><input type="text" name="account"/></td>
+            </tr>
+            <tr>
+                <td>密码：</td>
+                <td><input type="password" name="password"/></td>
+            </tr>
+            <tr>
+                <td id="submit" colspan="2"><input type="submit" value="登&nbsp;&nbsp;&nbsp;&nbsp;录"/></td>
+            </tr>
+        </table>
+    </form>
+    <div id="others">
+        <a href="login/volunteer_register.html">点击进入志愿者注册界面</a>
+        <br>
+        <a href="login/admin_login.html">点击进入管理员登录界面</a>
+    </div>
+</div>
+
 
 </body>
 </html>

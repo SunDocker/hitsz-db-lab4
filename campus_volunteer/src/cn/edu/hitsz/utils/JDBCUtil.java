@@ -101,6 +101,15 @@ public class JDBCUtil {
         return null;
     }
 
+    public static int executePreStateUpdate(PreparedStatement ps) {
+        try {
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public static List<String> getResSetStrings(ResultSet rs, String columnLabel) {
         List<String> res = new ArrayList<>();
         try {

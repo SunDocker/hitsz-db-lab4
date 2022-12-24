@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员注册</title>
+    <style>
+        #container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #submit {
+            text-align: center;
+        }
+
+        td {
+            text-align: right;
+        }
+
+        h2, h3 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <h2>校园志愿者招募平台</h2>
+    <h3>管理员注册</h3>
+    <form action="../register/admin" method="post" id="form">
+        <table>
+            <tr>
+                <td>管理员账号：</td>
+                <td><input type="text" name="account" id="account"/></td>
+            </tr>
+            <tr>
+                <td>密码：</td>
+                <td><input type="password" name="password" id="password"/></td>
+            </tr>
+            <tr>
+                <td id="submit" colspan="2"><button id="signup">注&nbsp;&nbsp;&nbsp;&nbsp;册</button></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    window.onload = function () {
+        const accountInput = document.getElementById("account")
+        const passwordInput = document.getElementById("password")
+
+        document.getElementById("signup").onclick = function (e) {
+            e.preventDefault()
+            let account = accountInput.value
+            let password = passwordInput.value
+            account = account.trim()
+            if (account === "") {
+                window.alert("账号不能为空")
+            } else if (password === "") {
+                window.alert("密码不能为空")
+            } else if (account.length > 10) {
+                window.alert("账号长度不能大于10")
+            } else if (password.length > 20) {
+                window.alert("密码长度不能大于20")
+            } else {
+                const formObj = document.getElementById("form");
+                formObj.submit();
+            }
+        }
+    }
+</script>
+</html>

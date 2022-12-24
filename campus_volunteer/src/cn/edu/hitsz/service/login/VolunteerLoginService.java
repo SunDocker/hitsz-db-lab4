@@ -5,16 +5,16 @@ import jakarta.servlet.annotation.WebServlet;
 /**
  * @author SunDocker
  */
-@WebServlet("/login/admin")
-public class AdminLoginService extends LoginService {
+@WebServlet("/login/volunteer")
+public class VolunteerLoginService extends LoginService {
 
     @Override
     String getUserTable() {
-        return "admin";
+        return "volunteer";
     }
 
     @Override
     String getLoginErrPage() {
-        return "/err/admin_login_err.html";
+        return "/err/volunteer_login_err.html";
     }
 }
