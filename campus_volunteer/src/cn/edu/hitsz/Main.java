@@ -1,6 +1,6 @@
 package cn.edu.hitsz;
 
-import cn.edu.hitsz.utils.JdbcUtil;
+import cn.edu.hitsz.utils.JDBCUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,7 +28,7 @@ public class Main extends HttpServlet {
         ResultSet rs = null;
 
         try {
-            conn = JdbcUtil.getConnection();
+            conn = JDBCUtil.getConnection();
             String sql = "select * from volunteer";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -40,7 +40,7 @@ public class Main extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            JdbcUtil.close(conn, ps, rs);
+            JDBCUtil.close(conn, ps, rs);
         }
 
         PrintWriter out = resp.getWriter();

@@ -4,25 +4,35 @@
     <meta charset="UTF-8">
     <style>
         form {
-
-            vert-align: middle;
-            horiz-align: center;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
+        table {
+            border: 1px solid black;
+        }
+        td {
+            text-align: right;
+        }
+        #submit {
+            text-align: center;
         }
     </style>
 </head>
 <body>
 <form action="volLogin" method="post">
-    <table align="center">
+    <table>
         <tr>
             <td>志愿者账号：</td>
-            <td><input type="text" name="x"/></td>
+            <td><input type="text" name="account"/></td>
         </tr>
         <tr>
             <td>密码：</td>
-            <td><input type="password" name="y"/></td>
+            <td><input type="password" name="password"/></td>
         </tr>
         <tr>
-            <td colspan="2"><input type="submit" value="登录"/></td>
+            <td id="submit" colspan="2"><input type="submit" value="登录"/></td>
         </tr>
     </table>
 </form>
