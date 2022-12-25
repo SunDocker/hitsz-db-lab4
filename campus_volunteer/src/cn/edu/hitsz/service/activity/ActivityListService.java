@@ -25,11 +25,7 @@ public class ActivityListService extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String sql = "select va.name name, va.category category, s.name site, " +
-                "va.begin_time beginTime, va.end_time endTime, va.content content," +
-                "va.num num, va.admin_account adminAccount " +
-                "from volunteer_activity va, site s " +
-                "where va.site_no = s.no";
+        String sql = "select * from volunteer_activity_detail order by no";
 
         PreparedStatement ps = JDBCUtil.prepareStatement(sql);
         assert ps != null;

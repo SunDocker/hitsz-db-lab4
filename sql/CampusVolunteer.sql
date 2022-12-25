@@ -1,12 +1,14 @@
 /*==============================================================*/
-/* DBMS name:      MySQL 5.0                                    */
+/* DBMS name:      MySQL 8.0                                    */
 /* Created on:     2022/12/23 20:23:32                          */
 /*==============================================================*/
 
 
-drop trigger if exists ADMIN_FILL_TIME_AFTER_INSERT;
+drop trigger if exists ADMIN_FILL_TIME_BEFORE_INSERT;
 
-drop trigger if exists VOLUNTEER_FILL_TIME_AFTER_INSERT;
+drop trigger if exists VOLUNTEER_FILL_TIME_BEFORE_INSERT;
+
+drop trigger if exists PARTICIPATE_FILL_TIME_BEFORE_INSERT;
 
 drop table if exists participate;
 
@@ -29,6 +31,10 @@ drop table if exists star_rating;
 drop table if exists volunteer_detail;
 
 drop view if exists volunteer_detail;
+
+drop table if exists volunteer_activity_detail;
+
+drop view if exists volunteer_activity_detail;
 
 /*==============================================================*/
 /* Table: activity_category                                     */
@@ -174,6 +180,25 @@ create index idx_end_time on volunteer_activity
 );
 
 /*==============================================================*/
+/* View: volunteer_activity_detail                              */
+/*==============================================================*/
+create VIEW  volunteer_activity_detail as select 
+                                              va.no no,
+                                              va.name name, 
+                                              va.category category, 
+                                              s.name site,
+                                              va.begin_time beginTime, 
+                                              va.end_time endTime, 
+                                              va.content content,
+                                              va.num num,
+                                              va.admin_account adminAccount,
+                                              now() > va.begin_time status
+                                          from 
+                                              volunteer_activity va, site s
+                                          where 
+                                              va.site_no = s.no;
+
+/*==============================================================*/
 /* View: volunteer_detail                                       */
 /*==============================================================*/
 create VIEW  volunteer_detail as select 
@@ -181,9 +206,9 @@ create VIEW  volunteer_detail as select
 									college.name college,
 									volunteer.star star,
 									organization.name organization,
-									volunteer.register_time register_time,
+									volunteer.register_time registerTime,
 									volunteer.nickname nickname,
-									volunteer.volunteer_time volunteer_time
+									volunteer.volunteer_time volunteerTime
                                  from 
                                      volunteer,
                                      college,

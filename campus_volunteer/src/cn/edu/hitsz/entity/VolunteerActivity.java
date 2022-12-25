@@ -4,6 +4,7 @@ package cn.edu.hitsz.entity;
  * @author SunDocker
  */
 public class VolunteerActivity {
+    public String no;
     public String name;
     public String category;
     public String site;
@@ -11,6 +12,27 @@ public class VolunteerActivity {
     public String endTime;
     public String content;
     public String num;
+    /**
+     * "0" 表示正常
+     * "1" 表示关闭
+     */
+    public String status;
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getName() {
         return name;

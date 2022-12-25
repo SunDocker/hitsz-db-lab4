@@ -24,6 +24,10 @@ public abstract class LoginService extends HttpServlet {
 
     abstract String getLoginErrPage();
 
+    /**
+     * 用 POST 请求访问此接口为登录
+     * （用 GET 请求访问此接口为退出）
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String account = req.getParameter("account");
@@ -50,5 +54,21 @@ public abstract class LoginService extends HttpServlet {
             resp.sendRedirect(contextPath + "/activity/volunteer_activity_list.html");
         }
         JDBCUtil.close(null, ps, rs);
+    }
+
+    /**
+     * 用 GET 请求访问此接口为退出
+     * （用 POST 请求访问此接口为登录）
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        String loginAuth = (String) session.getAttribute("login");
+        session.removeAttribute("login");
+
+        if (!("volunteer".equals(loginAuth) || "admin".equals(loginAuth))) {
+            new RuntimeException("退出时身份验证异常").printStackTrace();
+        }
+
     }
 }

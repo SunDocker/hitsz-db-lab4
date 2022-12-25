@@ -28,49 +28,68 @@
             border: 1px solid black;
         }
 
-        /*志愿活动名*/
+        h2, h3 {
+            text-align: center;
+        }
+
+        .admin_auth {
+            display: none;
+        }
+
+        .volunteer_auth {
+            display: none;
+        }
+
+        /*志愿活动编号*/
         #activity_table tr td:nth-child(1) {
-            width: 15%;
-        }
-
-        /*志愿活动类别*/
-        #activity_table tr td:nth-child(2) {
-            width: 9%;
-        }
-
-        /*志愿活动地点*/
-        #activity_table tr td:nth-child(3) {
-            width: 9%;
-        }
-
-        /*志愿活动开始时间*/
-        #activity_table tr td:nth-child(4) {
-            width: 11%;
-        }
-
-        /*志愿活动结束时间*/
-        #activity_table tr td:nth-child(5) {
-            width: 11%;
-        }
-
-        /*志愿活动主要内容与要求*/
-        #activity_table tr td:nth-child(6) {
-            width: 30%;
-        }
-
-        /*志愿活动所需人数*/
-        #activity_table tr td:nth-child(7) {
             width: 6%;
         }
 
-        /*志愿活动管理员*/
+        /*志愿活动名*/
+        #activity_table tr td:nth-child(2) {
+            width: 12%;
+        }
+
+        /*志愿活动类别*/
+        #activity_table tr td:nth-child(3) {
+            width: 8%;
+        }
+
+        /*志愿活动地点*/
+        #activity_table tr td:nth-child(4) {
+            width: 8%;
+        }
+
+        /*志愿活动开始时间*/
+        #activity_table tr td:nth-child(5) {
+            width: 8%;
+        }
+
+        /*志愿活动结束时间*/
+        #activity_table tr td:nth-child(6) {
+            width: 8%;
+        }
+
+        /*志愿活动主要内容与要求*/
+        #activity_table tr td:nth-child(7) {
+            width: 20%;
+        }
+
+        /*志愿活动所需人数*/
         #activity_table tr td:nth-child(8) {
             width: 6%;
         }
 
-        h2, h3 {
-            text-align: center;
+        /*志愿活动管理员*/
+        #activity_table tr td:nth-child(9) {
+            width: 8%;
         }
+
+        /*志愿活动状态*/
+        #activity_table tr td:nth-child(10) {
+            width: 7%;
+        }
+
     </style>
 </head>
 <body>
@@ -98,36 +117,36 @@
     <table>
         <tr>
             <th>报名志愿活动：</th>
-            <td>点击活动名即可报名</td>
+            <td>点击活动编号超链接即可报名</td>
         </tr>
         <tr>
             <td colspan="2">
-                <button>按开始时间先后查看</button>
+                <button>按开始时间先后展示志愿活动</button>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <button>按结束时间先后查看</button>
+                <button>按结束时间先后展示志愿活动</button>
             </td>
         </tr>
-        <tr>
+        <tr class="volunteer_auth">
             <td colspan="2">
-                <button>查看已报名志愿活动</button>
+                <button>查看已经报名过的志愿活动及其审核状态</button>
             </td>
         </tr>
-        <tr>
+        <tr class="admin_auth">
             <td colspan="2">
                 <button>发布志愿活动</button>
             </td>
         </tr>
-        <tr>
+        <tr class="admin_auth">
             <td colspan="2">
-                <button>查看自己发布的志愿活动/审核</button>
+                <button>查看自己发布的志愿活动并审核</button>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <button>退出登录</button>
+                <button id="logout_btn">退出登录</button>
             </td>
         </tr>
     </table>
@@ -139,6 +158,7 @@
     <table id="activity_table">
         <thead>
         <tr>
+            <th>志愿活动编号</th>
             <th>志愿活动名</th>
             <th>志愿活动类别</th>
             <th>志愿活动地点</th>
@@ -147,10 +167,12 @@
             <th>志愿活动主要内容与要求</th>
             <th>志愿活动所需人数</th>
             <th>志愿活动管理员</th>
+            <th>志愿活动状态</th>
         </tr>
         </thead>
         <tbody id="activity_list">
         <tr>
+            <td>666</td>
             <td>前端测试的|元旦晚会道具组</td>
             <td>文体娱乐类</td>
             <td>F校区操场</td>
@@ -159,6 +181,7 @@
             <td>前端测试的|给节目演员搬道具</td>
             <td>30</td>
             <td>root</td>
+            <td>正常</td>
         </tr>
         </tbody>
     </table>
@@ -166,28 +189,79 @@
 
 </body>
 <script>
-    const xhr = new XMLHttpRequest()
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const jsonStr = xhr.responseText
+    const activity_attr = [
+        'no',
+        'name',
+        'category',
+        'site',
+        'beginTime',
+        'endTime',
+        'content',
+        'num',
+        'adminAccount',
+        'status',
+    ]
+
+    document.getElementById("logout_btn").onclick = () => {
+        const xhr_logout = new XMLHttpRequest()
+        xhr_logout.open("GET", `../login/${sessionStorage.getItem("loginAuth")}`)
+        sessionStorage.removeItem("loginAuth")
+        xhr_logout.send()
+        window.history.replaceState(null, "", "../")
+        window.history.go(0)
+    }
+
+    const xhr_activities = new XMLHttpRequest()
+    const xhr_login = new XMLHttpRequest()
+
+    xhr_activities.onreadystatechange = () => {
+        if (xhr_activities.readyState === 4 && xhr_activities.status === 200) {
+            const jsonStr = xhr_activities.responseText
             const activities = JSON.parse(jsonStr)
-            console.log(activities)
+
             const listObj = document.getElementById("activity_list")
             activities.forEach(activity => {
                 let rowStr = `<tr>`
-                for (const attr in activity) {
-                    if (attr === 'name') {
-                        rowStr += `<td><a href="">${activity[attr]}</a></td>`;
+                activity_attr.forEach(attr => {
+                    if (attr === 'no') {
+                        rowStr += `<td><a href="">${activity[attr]}</a></td>`
+                    } else if (attr === 'status') {
+                        rowStr += `<td>${activity[attr] === "1" ? "已关闭" : "正常"}</td>`
                     } else {
-                        rowStr += `<td>${activity[attr]}</td>`;
+                        rowStr += `<td>${activity[attr]}</td>`
                     }
-                }
+                })
                 rowStr += `</tr>`
                 listObj.innerHTML += rowStr
-            });
+            })
+
         }
     }
-    xhr.open("GET", "list")
-    xhr.send()
+    xhr_login.onreadystatechange = () => {
+        if (xhr_login.readyState === 4 && xhr_login.status === 200) {
+            const respTxt = xhr_login.responseText
+            sessionStorage.setItem("loginAuth", respTxt)
+            if (respTxt === 'volunteer') {
+                const v_trs = Array.from(document.getElementsByClassName("volunteer_auth"))
+                v_trs.forEach(v_tr => {
+                    v_tr.style.display = "unset"
+                })
+            } else if (respTxt === 'admin') {
+                const v_trs = Array.from(document.getElementsByClassName("admin_auth"))
+                v_trs.forEach(v_tr => {
+                    v_tr.style.display = "unset"
+                })
+            } else {
+                console.error('身份验证出错')
+            }
+        }
+    }
+
+    xhr_activities.open("GET", "list")
+    xhr_login.open("GET", "../login/auth")
+
+    xhr_activities.send()
+    xhr_login.send()
+
 </script>
 </html>
