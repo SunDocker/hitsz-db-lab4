@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author SunDocker
@@ -25,7 +26,17 @@ public class ActivityListService extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String sql = "select * from volunteer_activity_detail order by no";
+        String order = req.getParameter("order");
+        String sql = "";
+        if (Objects.isNull(order)) {
+            sql = "select * from volunteer_activity_detail order by no";
+        } else if ("beginTime".equals(order)) {
+            sql = "select * from volunteer_activity_detail order by beginTime";
+        } else if ("endTime".equals(order)) {
+            sql = "select * from volunteer_activity_detail order by endTime";
+        }
+        System.out.println("===============>" + order);
+        System.out.println("=============>" + sql);
 
         PreparedStatement ps = JDBCUtil.prepareStatement(sql);
         assert ps != null;

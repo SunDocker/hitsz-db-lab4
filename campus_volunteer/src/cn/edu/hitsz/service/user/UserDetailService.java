@@ -36,7 +36,6 @@ public class UserDetailService extends HttpServlet {
         PreparedStatement ps = JDBCUtil.prepareStatement(sql);
         assert ps != null;
         JDBCUtil.setPreStateString(ps, 1, account);
-        System.out.println("==================>" + ps);
 
         ResultSet rs = JDBCUtil.executePreStateQuery(ps);
         assert rs != null;
