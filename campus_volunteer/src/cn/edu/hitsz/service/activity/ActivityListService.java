@@ -35,8 +35,6 @@ public class ActivityListService extends HttpServlet {
         } else if ("endTime".equals(order)) {
             sql = "select * from volunteer_activity_detail order by endTime";
         }
-        System.out.println("===============>" + order);
-        System.out.println("=============>" + sql);
 
         PreparedStatement ps = JDBCUtil.prepareStatement(sql);
         assert ps != null;

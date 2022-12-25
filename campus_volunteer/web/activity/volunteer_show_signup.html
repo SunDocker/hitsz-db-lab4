@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>志愿活动报名与审核状态</title>
+    <style>
+        #container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #activity_table {
+            text-align: center;
+            border: 2px solid black;
+            border-collapse: collapse;
+            width: fit-content;
+            height: max-content;
+            margin: auto;
+        }
+
+        #activity_table td, #activity_table th {
+            border: 1px solid black;
+        }
+
+        td {
+
+        }
+
+        h2, h3 {
+            text-align: center;
+        }
+
+        #others {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>校园志愿者招募平台</h2>
+    <h3 id="h3title">已报名志愿活动及其审核状态</h3>
+    <table id="activity_table">
+        <thead>
+        <tr>
+            <th>志愿活动名</th>
+            <th>报名时间</th>
+            <th>审核状态</th>
+        </tr>
+        </thead>
+        <tbody id="activity_list">
+        <tr>
+            <td>前端测试的|元旦晚会道具组</td>
+            <td>2022-12-31 16:00:45</td>
+            <td>待审核</td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="others">
+        <a href="volunteer_activity_list.html">点击返回志愿活动展示界面</a>
+    </div>
+</div>
+</body>
+<script>
+    const account = sessionStorage.getItem('loginAuth').toString().split(':')[1]
+    const activity_attr = [
+        'name',
+        'signupTime',
+        'checkStatus',
+    ]
+
+    document.getElementById('h3title').innerText = '账号' + account + '\t已报名志愿活动及其审核状态'
+
+    const xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const jsonStr = xhr.responseText
+            const activities = JSON.parse(jsonStr)
+
+            const listObj = document.getElementById("activity_list")
+            listObj.innerHTML = ""
+            activities.forEach(activity => {
+                let rowStr = `<tr>`
+                activity_attr.forEach(attr => {
+                    rowStr += `<td>${activity[attr]}</td>`
+                })
+                rowStr += `</tr>`
+                listObj.innerHTML += rowStr
+            })
+
+        }
+    }
+    xhr.open("GET", "showSignup")
+    xhr.send()
+</script>
+</html>
