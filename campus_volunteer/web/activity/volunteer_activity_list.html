@@ -28,6 +28,10 @@
             border: 1px solid black;
         }
 
+        #user_detail tr th{
+            text-align: right;
+        }
+
         h2, h3 {
             text-align: center;
         }
@@ -99,18 +103,7 @@
     <h3>导航栏</h3>
     <div>当前用户：</div>
     <table id="user_detail">
-        <tr>
-            <th>权限：</th>
-            <td>管理员</td>
-        </tr>
-        <tr>
-            <th>账号：</th>
-            <td>account admin</td>
-        </tr>
-        <tr>
-            <th>昵称：</th>
-            <td>account</td>
-        </tr>
+
     </table>
     <hr>
     <div>可用操作：</div>
@@ -209,6 +202,7 @@
         'organization': '所在义工联',
         'college': '所在学院',
         'registerTime': '注册时间',
+        'register_time': '注册时间',
     }
 
     document.getElementById("logout_btn").onclick = () => {
@@ -228,8 +222,8 @@
     }
 
     const xhr_activities = new XMLHttpRequest()
-    const xhr_login = new XMLHttpRequest()
     const xhr_user_detail = new XMLHttpRequest()
+    const xhr_login = new XMLHttpRequest()
 
     xhr_activities.onreadystatechange = () => {
         if (xhr_activities.readyState === 4 && xhr_activities.status === 200) {
@@ -254,18 +248,21 @@
 
         }
     }
-    .onreadystatechange = () => {
+    xhr_user_detail.onreadystatechange = () => {
         if (xhr_user_detail.readyState === 4 && xhr_user_detail.status === 200) {
             const jsonStr = xhr_user_detail.responseText
+            console.warn(jsonStr)
             const user_detail = JSON.parse(jsonStr)
 
             const user_detail_table_obj = document.getElementById("user_detail")
             let trs_str = ''
             for (const attr in user_attr_ch_map) {
-                trs_str += `<tr>`
-                trs_str += `<th>${user_attr_ch_map[attr]}</th>`
-                trs_str += `<td>${user_detail[attr]}</td>`
-                trs_str += `</tr>`
+                if (user_detail[attr]) {
+                    trs_str += `<tr>`;
+                    trs_str += `<th>${user_attr_ch_map[attr]}: </th>`
+                    trs_str += `<td>${user_detail[attr]}</td>`
+                    trs_str += `</tr>`
+                }
             }
             user_detail_table_obj.innerHTML += trs_str
         }
@@ -292,7 +289,7 @@
     }
 
     xhr_activities.open("GET", "list")
-    xhr_user_detail.open("GET", "../login/auth")
+    xhr_user_detail.open("GET", "../user/detail")
     xhr_login.open("GET", "../login/auth")
 
     xhr_activities.send()

@@ -50,7 +50,7 @@ public abstract class LoginService extends HttpServlet {
             resp.sendRedirect(contextPath + getLoginErrPage());
         } else {
             HttpSession session = req.getSession();
-            session.setAttribute("login", getUserTable()+":"+account);
+            session.setAttribute("loginAuth", getUserTable()+":"+account);
             resp.sendRedirect(contextPath + "/activity/volunteer_activity_list.html");
         }
         JDBCUtil.close(null, ps, rs);
@@ -63,8 +63,8 @@ public abstract class LoginService extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String loginAuth = (String) session.getAttribute("login");
-        session.removeAttribute("login");
+        String loginAuth = (String) session.getAttribute("loginAuth");
+        session.removeAttribute("loginAuth");
 
         if (!(loginAuth.startsWith("volunteer")
                 || loginAuth.startsWith("admin"))) {

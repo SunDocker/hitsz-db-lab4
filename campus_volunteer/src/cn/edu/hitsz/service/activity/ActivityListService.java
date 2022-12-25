@@ -38,7 +38,6 @@ public class ActivityListService extends HttpServlet {
         JDBCUtil.close(null, ps, rs);
 
         ObjectMapper mapper = new ObjectMapper();
-
         String jsonStr = mapper.writeValueAsString(activities);
 
         PrintWriter out = resp.getWriter();

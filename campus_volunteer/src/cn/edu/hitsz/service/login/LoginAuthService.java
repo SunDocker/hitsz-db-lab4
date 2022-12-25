@@ -18,7 +18,7 @@ public class LoginAuthService extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String loginAuth = (String) session.getAttribute("login");
+        String loginAuth = (String) session.getAttribute("loginAuth");
 
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/txt");
