@@ -50,7 +50,7 @@ public abstract class LoginService extends HttpServlet {
             resp.sendRedirect(contextPath + getLoginErrPage());
         } else {
             HttpSession session = req.getSession();
-            session.setAttribute("login", getUserTable());
+            session.setAttribute("login", getUserTable()+":"+account);
             resp.sendRedirect(contextPath + "/activity/volunteer_activity_list.html");
         }
         JDBCUtil.close(null, ps, rs);
@@ -66,7 +66,8 @@ public abstract class LoginService extends HttpServlet {
         String loginAuth = (String) session.getAttribute("login");
         session.removeAttribute("login");
 
-        if (!("volunteer".equals(loginAuth) || "admin".equals(loginAuth))) {
+        if (!(loginAuth.startsWith("volunteer")
+                || loginAuth.startsWith("admin"))) {
             new RuntimeException("退出时身份验证异常").printStackTrace();
         }
 
