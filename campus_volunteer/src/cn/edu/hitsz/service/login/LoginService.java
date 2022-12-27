@@ -64,7 +64,7 @@ public abstract class LoginService extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String loginAuth = (String) session.getAttribute("loginAuth");
-        session.removeAttribute("loginAuth");
+        session.invalidate();
 
         if (!(loginAuth.startsWith("volunteer")
                 || loginAuth.startsWith("admin"))) {

@@ -3,8 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <title>查看自己发布的志愿活动并审核</title>
+    <style>
+        #container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #activity_table, #check_table {
+            text-align: center;
+            border: 2px solid black;
+            border-collapse: collapse;
+            width: fit-content;
+            height: max-content;
+            margin: auto;
+        }
+
+        #activity_table td, #activity_table th, #check_table td, #check_table th {
+            border: 1px solid black;
+        }
+
+        h2, h3, h4 {
+            text-align: center;
+        }
+
+        #others {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 
+<div id="container">
+    <h2>校园志愿者招募平台</h2>
+    <h3 id="h3title">发布的志愿活动</h3>
+    <table id="activity_table">
+        <thead>
+        <tr>
+            <th>志愿活动名</th>
+            <th>志愿活动类别</th>
+            <th>志愿活动地点</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+        </tr>
+        </thead>
+        <tbody id="activity_list">
+        </tbody>
+    </table>
+    <br>
+    <hr>
+
+    <h3 id="h3check">需要审核的志愿活动报名</h3>
+    <h4>点击按钮即可审核</h4>
+    <table id="check_table">
+        <thead>
+        <tr>
+            <th>志愿活动名</th>
+            <th>报名志愿者账号</th>
+            <th>报名时间</th>
+            <th>审核状态</th>
+        </tr>
+        </thead>
+        <tbody id="check_list">
+        </tbody>
+    </table>
+
+    <div id="others">
+        <a href="volunteer_activity_list.html">点击返回志愿活动展示界面</a>
+    </div>
+</div>
 </body>
+<script>
+    const account = sessionStorage.getItem('loginAuth').toString().split(':')[1]
+    const activity_attr = [
+        'name',
+        'category',
+        'site',
+        'beginTime',
+        'endTime',
+    ]
+    const check_attr = [
+        'name',
+        'volunteerAccount',
+        'signupTime',
+        'checkStatus',
+    ]
+
+    document.getElementById('h3title').innerText = '账号' + account + '\t发布的志愿活动部分信息'
+    document.getElementById('h3check').innerText = '账号' + account + '\t需要审核的志愿活动报名'
+
+    const xhr_release = new XMLHttpRequest()
+    const xhr_check = new XMLHttpRequest()
+
+    xhr_release.onreadystatechange = () => {
+        if (xhr_release.readyState === 4 && xhr_release.status === 200) {
+            const jsonStr = xhr_release.responseText
+            const activities = JSON.parse(jsonStr)
+
+            const listObj = document.getElementById("activity_list")
+            listObj.innerHTML = ""
+            activities.forEach(activity => {
+                let rowStr = `<tr>`
+                activity_attr.forEach(attr => {
+                    rowStr += `<td>${activity[attr]}</td>`
+                })
+                rowStr += `</tr>`
+                listObj.innerHTML += rowStr
+            })
+
+        }
+    }
+    xhr_check.onreadystatechange = () => {
+        if (xhr_check.readyState === 4 && xhr_check.status === 200) {
+            const jsonStr = xhr_check.responseText
+            const activities = JSON.parse(jsonStr)
+
+            const listObj = document.getElementById("check_list")
+            listObj.innerHTML = ""
+            activities.forEach(activity => {
+                let rowStr = `<tr>`
+                check_attr.forEach(attr => {
+                    if (attr === "checkStatus" && activity[attr] === "待审核") {
+                        rowStr += `<td>
+                                    <button
+                                        onclick="check(${activity['no']})">
+                                    ${activity[attr]}</td>`;
+                    } else {
+                        rowStr += `<td>${activity[attr]}</td>`;
+                    }
+                })
+                rowStr += `</tr>`
+                listObj.innerHTML += rowStr
+            })
+
+        }
+    }
+
+    xhr_release.open("GET", "showRelease")
+    xhr_check.open("GET", "showCheck")
+
+    xhr_release.send()
+    xhr_check.send()
+
+    function check(no) {
+        const check = prompt("请输入0或1，并点击确定（或按下回车）\n0代表拒绝，1代表通过")
+
+        if (!check) return
+        if (!(check === '0' || check === '1')) {
+            alert('只能输入0或1！0代表拒绝，1代表通过！')
+            return
+        }
+
+        const xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const respTxt = xhr.responseText
+                if (respTxt === "checkOK") {
+                    alert('审核成功');
+                } else {
+                    alert('审核失败，可能因为登录已过期！')
+                }
+            }
+        }
+        xhr.open("POST", "check")
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        xhr.send(`no=${no}`)
+    }
+</script>
 </html>
