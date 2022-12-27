@@ -8,12 +8,14 @@
             position: absolute;
             right: 25px;
             width: 80%;
+            /*border: 2px dotted black;*/
         }
 
         #navigator {
             position: absolute;
             width: 15%;
             left: 25px;
+            /*border: 2px dotted black;*/
         }
 
         #activity_table {
@@ -28,8 +30,18 @@
             border: 1px solid black;
         }
 
-        #user_detail tr th {
-            text-align: right;
+        #user_detail {
+            text-align: left;
+        }
+
+        #user_detail th, #user_detail td {
+            border: 1px dotted black;
+        }
+
+        #operation {
+        }
+
+        #operation tr td button, .admin_auth td button, .volunteer_auth td button {
         }
 
         h2, h3 {
@@ -105,12 +117,10 @@
     <table id="user_detail">
 
     </table>
+    <!--    <hr>-->
     <hr>
     <div>可用操作：</div>
-    <table>
-        <tr>
-            报名志愿活动：点击<b>活动编号</b>超链接即可
-        </tr>
+    <table id="operation">
         <tr>
             <td>
                 <button id="no_order_btn">点击按编号从小到大展示志愿活动</button>
@@ -118,27 +128,44 @@
         </tr>
         <tr>
             <td>
-                <button id="begin_time_order_btn">点击按开始时间先后展示志愿活动</button>
+                <button id="begin_time_order_btn">
+                    点击按开始时间先后展示志愿活动
+                </button>
             </td>
         </tr>
         <tr>
             <td>
-                <button id="end_time_order_btn">点击按结束时间先后展示志愿活动</button>
+                <button id="end_time_order_btn">
+                    点击按结束时间先后展示志愿活动
+                </button>
             </td>
         </tr>
         <tr class="volunteer_auth">
             <td>
-                <a href="volunteer_show_signup.html">点击查看已经报名过的志愿活动及其审核状态</a>
+                <button>
+                    报名志愿活动：点击<b>活动编号</b>按钮即可（点击本按钮无用）
+                </button>
+            </td>
+        </tr>
+        <tr class="volunteer_auth">
+            <td>
+                <button onclick="location.href='volunteer_show_signup.html'">
+                    点击查看已经报名过的志愿活动及其审核状态
+                </button>
             </td>
         </tr>
         <tr class="admin_auth">
             <td>
-                <button>发布志愿活动</button>
+                <button onclick="location.href='admin_release_activity.html'">
+                    发布志愿活动
+                </button>
             </td>
         </tr>
         <tr class="admin_auth">
             <td>
-                <button>查看自己发布的志愿活动并审核</button>
+                <button onclick="location.href='admin_show_release.html'">
+                    查看自己发布的志愿活动并审核
+                </button>
             </td>
         </tr>
         <tr>
@@ -168,7 +195,7 @@
         </tr>
         </thead>
         <tbody id="activity_list">
-        <tr>
+        <!--<tr>
             <td>666</td>
             <td>前端测试的|元旦晚会道具组</td>
             <td>文体娱乐类</td>
@@ -179,7 +206,7 @@
             <td>30</td>
             <td>root</td>
             <td>正常</td>
-        </tr>
+        </tr>-->
         </tbody>
     </table>
 </div>
@@ -211,6 +238,90 @@
     }
     let cur_show_status = 0
 
+    /**
+     * Send AJAX Request
+     */
+    const xhr_activities = new XMLHttpRequest()
+    const xhr_user_detail = new XMLHttpRequest()
+    const xhr_login = new XMLHttpRequest()
+
+    xhr_activities.onreadystatechange = () => {
+        if (xhr_activities.readyState === 4 && xhr_activities.status === 200) {
+            const jsonStr = xhr_activities.responseText
+            const activities = JSON.parse(jsonStr)
+
+            const listObj = document.getElementById("activity_list")
+            listObj.innerHTML = ""
+            activities.forEach(activity => {
+                let rowStr = `<tr>`
+                activity_attr.forEach(attr => {
+                    if (attr === 'no') {
+                        rowStr += `<td><button onclick="signup_activity(this)">${activity[attr]}</td>`
+                    } else if (attr === 'status') {
+                        rowStr += `<td>${activity[attr] === "1" ? "已关闭" : "正常"}</td>`
+                    } else {
+                        rowStr += `<td>${activity[attr]}</td>`
+                    }
+                })
+                rowStr += `</tr>`
+                listObj.innerHTML += rowStr
+            })
+
+        }
+    }
+    xhr_user_detail.onreadystatechange = () => {
+        if (xhr_user_detail.readyState === 4 && xhr_user_detail.status === 200) {
+            const jsonStr = xhr_user_detail.responseText
+            const user_detail = JSON.parse(jsonStr)
+
+            const user_detail_table_obj = document.getElementById("user_detail")
+            let trs_str = ''
+            for (const attr in user_attr_ch_map) {
+                if (user_detail[attr]) {
+                    trs_str += `<tr>`;
+                    trs_str += `<th>${user_attr_ch_map[attr]}: </th>`
+                    trs_str += `<td>
+                                ${user_detail[attr]}
+                                ${(attr === "volunteerTime") ? "小时" : ""}
+                                </td>`
+                    trs_str += `</tr>`
+                }
+            }
+            user_detail_table_obj.innerHTML += trs_str
+        }
+    }
+    xhr_login.onreadystatechange = () => {
+        if (xhr_login.readyState === 4 && xhr_login.status === 200) {
+            const respTxt = xhr_login.responseText
+            sessionStorage.setItem("loginAuth", respTxt)
+            if (respTxt.startsWith('volunteer')) {
+                const v_trs = Array.from(document.getElementsByClassName("volunteer_auth"))
+                v_trs.forEach(v_tr => {
+                    v_tr.style.display = "inherit"
+                })
+            } else if (respTxt.startsWith('admin')) {
+                const v_trs = Array.from(document.getElementsByClassName("admin_auth"))
+                v_trs.forEach(v_tr => {
+                    v_tr.style.display = "inherit"
+                })
+            } else {
+                console.error('身份验证出错')
+                window.alert("身份验证出错，请重新登录")
+            }
+        }
+    }
+
+    xhr_activities.open("GET", "list")
+    xhr_user_detail.open("GET", "../user/detail")
+    xhr_login.open("GET", "../login/auth")
+
+    xhr_activities.send()
+    xhr_user_detail.send()
+    xhr_login.send()
+
+    /**
+     * Bind Events
+     */
     document.getElementById("logout_btn").onclick = () => {
         const xhr_logout = new XMLHttpRequest()
         const login_auth = sessionStorage.getItem("loginAuth")
@@ -299,83 +410,36 @@
         }
     }
 
-    const xhr_activities = new XMLHttpRequest()
-    const xhr_user_detail = new XMLHttpRequest()
-    const xhr_login = new XMLHttpRequest()
-
-    xhr_activities.onreadystatechange = () => {
-        if (xhr_activities.readyState === 4 && xhr_activities.status === 200) {
-            const jsonStr = xhr_activities.responseText
-            const activities = JSON.parse(jsonStr)
-
-            const listObj = document.getElementById("activity_list")
-            listObj.innerHTML = ""
-            activities.forEach(activity => {
-                let rowStr = `<tr>`
-                activity_attr.forEach(attr => {
-                    if (attr === 'no') {
-                        rowStr += `<td><a href="">${activity[attr]}</a></td>`
-                    } else if (attr === 'status') {
-                        rowStr += `<td>${activity[attr] === "1" ? "已关闭" : "正常"}</td>`
-                    } else {
-                        rowStr += `<td>${activity[attr]}</td>`
-                    }
-                })
-                rowStr += `</tr>`
-                listObj.innerHTML += rowStr
-            })
-
+    function signup_activity(btn) {
+        const login_auth = sessionStorage.getItem("loginAuth")
+        if (login_auth.startsWith("admin")) {
+            window.alert("管理员不能报名志愿活动！")
+            return
         }
-    }
-    xhr_user_detail.onreadystatechange = () => {
-        if (xhr_user_detail.readyState === 4 && xhr_user_detail.status === 200) {
-            const jsonStr = xhr_user_detail.responseText
-            const user_detail = JSON.parse(jsonStr)
-
-            const user_detail_table_obj = document.getElementById("user_detail")
-            let trs_str = ''
-            for (const attr in user_attr_ch_map) {
-                if (user_detail[attr]) {
-                    trs_str += `<tr>`;
-                    trs_str += `<th>${user_attr_ch_map[attr]}: </th>`
-                    trs_str += `<td>
-                                ${user_detail[attr]}
-                                ${(attr === "volunteerTime") ? "小时" : ""}
-                                </td>`
-                    trs_str += `</tr>`
+        if (!login_auth.startsWith("volunteer")) {
+            window.alert("身份验证出错，请重新登录！")
+            return
+        }
+        const activity_no = btn.innerHTML
+        const signup = window.confirm(`是否报名${activity_no}号志愿活动？（注：报名后无法取消报名）`)
+        if (signup) {
+            const xhr = new XMLHttpRequest()
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const respTxt = xhr.responseText
+                    if (respTxt === "signupOK") {
+                        alert("报名成功！");
+                    } else if (respTxt === "signupFail") {
+                        alert("报名失败！可能是因为重复报名了活动，或者登录已过期！");
+                    } else {
+                        alert("发生了未知异常！")
+                    }
                 }
             }
-            user_detail_table_obj.innerHTML += trs_str
+            xhr.open("GET", `signup?activity_no=${activity_no}`)
+            xhr.send()
         }
     }
-    xhr_login.onreadystatechange = () => {
-        if (xhr_login.readyState === 4 && xhr_login.status === 200) {
-            const respTxt = xhr_login.responseText
-            sessionStorage.setItem("loginAuth", respTxt)
-            if (respTxt.startsWith('volunteer')) {
-                const v_trs = Array.from(document.getElementsByClassName("volunteer_auth"))
-                v_trs.forEach(v_tr => {
-                    v_tr.style.display = "unset"
-                })
-            } else if (respTxt.startsWith('admin')) {
-                const v_trs = Array.from(document.getElementsByClassName("admin_auth"))
-                v_trs.forEach(v_tr => {
-                    v_tr.style.display = "unset"
-                })
-            } else {
-                console.error('身份验证出错')
-                window.alert("身份验证出错，请重新登录")
-            }
-        }
-    }
-
-    xhr_activities.open("GET", "list")
-    xhr_user_detail.open("GET", "../user/detail")
-    xhr_login.open("GET", "../login/auth")
-
-    xhr_activities.send()
-    xhr_user_detail.send()
-    xhr_login.send()
 
 </script>
 </html>

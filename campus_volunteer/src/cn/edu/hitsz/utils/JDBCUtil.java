@@ -95,6 +95,14 @@ public class JDBCUtil {
         }
     }
 
+    public static void setPreStateInt(PreparedStatement ps, int parameterIndex, int x) {
+        try {
+            ps.setInt(parameterIndex, x);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static ResultSet executePreStateQuery(PreparedStatement ps) {
         try {
             return ps.executeQuery();

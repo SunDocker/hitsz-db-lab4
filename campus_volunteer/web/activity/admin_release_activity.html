@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发布志愿活动</title>
+    <style>
+        #container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .item_name {
+            text-align: right;
+        }
+
+        #submit {
+            text-align: center;
+        }
+
+        input[type=submit] {
+            width: fit-content;
+        }
+
+        h2, h3 {
+            text-align: center;
+        }
+
+        #others {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="container">
+    <h2>校园志愿者招募平台</h2>
+    <h3>发布志愿活动</h3>
+    <form action="release" method="post" id="form">
+        <table>
+            <tr>
+                <td class="item_name">活动名：</td>
+                <td><input type="text" name="name" id="name"/></td>
+            </tr>
+            <tr>
+                <td class="item_name">活动类别：</td>
+                <td>
+                    <select name="category" id="category">
+                        <option value="无类别">
+                            无类别
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_name">活动地点：</td>
+                <td>
+                    <select name="site_no" id="site_no">
+                        <option value="0">
+                            其他(请在主要内容中说明)
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_name">活动主要内容与要求：</td>
+                <td><textarea rows="5" cols="21" name="content" id="content"></textarea></td>
+            </tr>
+            <tr>
+                <td class="item_name">活动所需人数：</td>
+                <td><input type="number" name="num" id="num"/></td>
+            </tr>
+            <tr>
+                <td class="item_name">活动开始时间：</td>
+                <td><input type="datetime-local" step="1" name="begin_time" id="begin_time"/></td>
+            </tr>
+            <tr>
+                <td class="item_name">活动结束时间：</td>
+                <td><input type="datetime-local" step="1" name="end_time" id="end_time"/></td>
+            </tr>
+            <tr>
+            <tr>
+                <td id="submit" colspan="2">
+                    <button id="release">发&nbsp;&nbsp;&nbsp;&nbsp;布</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div id="others">
+        <a href="volunteer_activity_list.html">点击返回志愿活动展示界面</a>
+    </div>
+</div>
+</body>
+<script>
+    const name_input = document.getElementById("name")
+    const category_select = document.getElementById("category")
+    const site_select = document.getElementById("site_no")
+    const content_area = document.getElementById("content")
+    const num_input = document.getElementById("num")
+    const begin_datetime = document.getElementById("begin_time")
+    const end_datetime = document.getElementById("end_time")
+    /**
+     * Send AJAX Request
+     */
+    const xhr_category = new XMLHttpRequest()
+    const xhr_site = new XMLHttpRequest()
+
+    xhr_category.onreadystatechange = () => {
+        if (xhr_category.readyState === 4 && xhr_category.status === 200) {
+            const jsonStr = xhr_category.responseText
+            const categories = JSON.parse(jsonStr)
+            let optionsStr = ``
+            categories.forEach(category => {
+                if (category.name === "无类别") return
+                optionsStr += `<option value="${category.name}">${category.name}`
+            });
+            category_select.innerHTML += optionsStr
+        }
+    }
+    xhr_site.onreadystatechange = () => {
+        if (xhr_site.readyState === 4 && xhr_site.status === 200) {
+            const jsonStr = xhr_site.responseText
+            const sites = JSON.parse(jsonStr)
+            let optionsStr = ``
+            sites.forEach(site => {
+                if (site.name === "其他地点") return
+                optionsStr += `<option value="${site.no}">${site.name}`
+            });
+            site_select.innerHTML += optionsStr
+        }
+    }
+
+    xhr_category.open("GET", "category")
+    xhr_site.open("GET", "site")
+
+    xhr_category.send()
+    xhr_site.send()
+
+
+    /**
+     * Bind Events
+     */
+    document.getElementById("release").onclick = function (e) {
+        e.preventDefault()
+        let name = name_input.value
+        const category = category_select.value
+        const site_no = site_select.value
+        const content = content_area.value
+        const num = num_input.value
+        const begin_time = begin_datetime.value
+        const end_time = end_datetime.value
+        console.log(name)
+        console.log(category)
+        console.log(site_no)
+        console.log(content)
+        console.log(num)
+        console.log(begin_time)
+        console.log(end_time)
+
+        name = name.trim()
+        if (name === "") {
+            window.alert("活动名不能为空")
+        } else if (name.length > 20) {
+            window.alert("活动名长度不能大于20")
+        } else if (content === "") {
+            window.alert("活动主要内容与要求不能为空")
+        } else if (num === "") {
+            window.alert("活动所需人数不能为空")
+        } else if (num < 0) {
+            window.alert("活动所需人数不能小于0")
+        } else if (begin_time === "") {
+            window.alert("活动开始时间不能为空")
+        } else if (end_time === "") {
+            window.alert("活动结束时间不能为空")
+        } else {
+            const formObj = document.getElementById("form");
+            formObj.submit();
+        }
+    }
+</script>
+</html>
