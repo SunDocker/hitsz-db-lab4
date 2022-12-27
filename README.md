@@ -48,17 +48,36 @@ HITSZ 大三就读生，为了完成数据库系统课程的实验四，但**几
 
 -   学习资源：
 
-    -   `JDBC`：
+    -   `HTML JavaScript CSS`：[【老杜最新HTML+CSS+JavaScript基础到精通视频教程全套完整版】](https://www.bilibili.com/video/BV18p4y1B7JR/?share_source=copy_web&vd_source=680b4fce60843e338596195a7d3c88a4)
+
+        -   P1——P15、P18——P30
+        -   P33——P45
+        -   P47——P109、P112——P115
+
+    -   `AJAX`：[【动力节点最新Ajax教程-快速搞定ajax】](https://www.bilibili.com/video/BV1cR4y1P7B1/?p=3&share_source=copy_web&vd_source=680b4fce60843e338596195a7d3c88a4)
+
+        -   P1——P13
+
+    -   `JDBC`：[【动力节点老杜2020最新版JDBC零基础教程-IDEA版】](https://www.bilibili.com/video/BV17V411v7SL/?share_source=copy_web&vd_source=680b4fce60843e338596195a7d3c88a4)
+
+        -   P1——P9、P12——P15
 
     -   `Java Servlet` 、 `Tomcat` 服务器和 `HTTP` 协议：
 
-    -   `HTML JavaScript CSS`：
+        -   P1——P11
 
-    -   `AJAX`：
+        -   P15——P26
 
-    -   [SunDocker 个人博客](https://sundocker.gitee.io/)
+        -   P32、P34——P35
 
-        >   还在搭建中，许多知识尚未整理，敬请期待 ...... 。
+        -   P43——P49
+
+
+        >   注意，上面列出的不代表都要看完，看到掌握了**这项技术大致框架**的程度即可，不着急填充框架内的
+
+    -   [SunDocker 个人博客](https://sundocker.gitee.io/)：在个人博客中对以上知识均有清晰的整理
+
+        >   个人博客还在搭建中，许多知识尚未整理，敬请期待 ...... 。
 
 # 为什么我要使用如此丑陋的原生HTML组件？
 
