@@ -128,7 +128,7 @@
                     if (attr === "checkStatus" && activity[attr] === "待审核") {
                         rowStr += `<td>
                                     <button
-                                        onclick="check(${activity['no']})">
+                                        onclick="check(${activity['no']}, '${activity['volunteerAccount']}')">
                                     ${activity[attr]}</td>`;
                     } else {
                         rowStr += `<td>${activity[attr]}</td>`;
@@ -147,7 +147,7 @@
     xhr_release.send()
     xhr_check.send()
 
-    function check(no) {
+    function check(no, volunteerAccount) {
         const check = prompt("请输入0或1，并点击确定（或按下回车）\n0代表拒绝，1代表通过")
 
         if (!check) return
@@ -162,6 +162,7 @@
                 const respTxt = xhr.responseText
                 if (respTxt === "checkOK") {
                     alert('审核成功');
+                    location.reload()
                 } else {
                     alert('审核失败，可能因为登录已过期！')
                 }
@@ -169,7 +170,7 @@
         }
         xhr.open("POST", "check")
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        xhr.send(`no=${no}&check=${check}`)
+        xhr.send(`no=${no}&check=${check}&volunteerAccount=${volunteerAccount}`)
     }
 </script>
 </html>

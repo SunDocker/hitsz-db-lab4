@@ -21,20 +21,30 @@ public class ActivityCheckService extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String no = req.getParameter("no");
         String check = req.getParameter("check");
+        String volunteerAccount = req.getParameter("volunteerAccount");
 
-        HttpSession session = req.getSession();
-        String loginAuth = (String) session.getAttribute("loginAuth");
-        String account = loginAuth.split(":")[1];
+
+        PrintWriter out = resp.getWriter();
+        resp.setContentType("text/txt");
 
         String sql = "update participate " +
-                "set check_status = '通过' " +
-                "where activity_no = 1 and volunteer_account = 'lisi'";
+                "set check_status = ? " +
+                "where activity_no = ? and volunteer_account = ?";
 
         PreparedStatement ps = JDBCUtil.prepareStatement(sql);
         assert ps != null;
 
-        JDBCUtil.setPreStateInt(ps, 1, Integer.parseInt(no));
-        JDBCUtil.setPreStateString(ps, 2, account);
+        if ("0".equals(check)) {
+            JDBCUtil.setPreStateString(ps, 1, "拒绝");
+        } else if ("1".equals(check)) {
+            JDBCUtil.setPreStateString(ps, 1, "通过");
+        } else {
+            out.print("checkErr");
+            JDBCUtil.close(null, ps, null);
+            return;
+        }
+        JDBCUtil.setPreStateInt(ps, 2, Integer.parseInt(no));
+        JDBCUtil.setPreStateString(ps, 3, volunteerAccount);
 
         int rowCount = JDBCUtil.executePreStateUpdate(ps);
 
@@ -42,13 +52,9 @@ public class ActivityCheckService extends HttpServlet {
 
         String contextPath = getServletContext().getContextPath();
         if (rowCount == 1) {
-            resp.sendRedirect(contextPath + "/err/activity_release_success.html");
+            out.print("checkOK");
         } else {
-            resp.sendRedirect(contextPath + "/err/activity_release_err.html");
+            out.print("checkErr");
         }
-
-        PrintWriter out = resp.getWriter();
-        resp.setContentType("text/txt");
-        out.print("checkOK");
     }
 }

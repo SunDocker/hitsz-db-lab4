@@ -423,9 +423,13 @@
 
     function signup_activity(btn) {
         const login_auth = sessionStorage.getItem("loginAuth")
-        if (login_auth.startsWith("admin")) {
-            window.alert("管理员不能报名志愿活动！")
+        if (!login_auth) {
+            window.alert("身份验证出错，不能报名志愿活动，请重新登录！")
             return
+        }
+        if (login_auth.startsWith("admin")) {
+            window.alert("管理员不能报名志愿活动！");
+            return;
         }
         if (!login_auth.startsWith("volunteer")) {
             window.alert("身份验证出错，不能报名志愿活动，请重新登录！")
