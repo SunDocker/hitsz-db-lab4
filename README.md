@@ -62,7 +62,7 @@ HITSZ 大三就读生，为了完成数据库系统课程的实验四，但**几
 
 # 为什么我要使用如此丑陋的原生HTML组件？
 
-我并不是不会 `CSS ` 框架，也不是不会装饰 WEB 页面，
+我并不是不会 `CSS` 框架，也不是不会装饰 WEB 页面，
 
 >   可以参考我的另一个项目 [wisdom-world](https://github.com/SunDocker/wisdom-world-app.git)，前端使用了 `Vue` 框架和 `ElementUI` 框架
 >
