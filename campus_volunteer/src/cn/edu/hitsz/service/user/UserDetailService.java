@@ -1,5 +1,7 @@
 package cn.edu.hitsz.service.user;
 
+import cn.edu.hitsz.entity.VolunteerActivity;
+import cn.edu.hitsz.entity.VolunteerDetail;
 import cn.edu.hitsz.utils.JDBCUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -14,6 +16,7 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author SunDocker
@@ -53,8 +56,16 @@ public class UserDetailService extends HttpServlet {
 
         JDBCUtil.close(null, ps, rs);
 
+        Object userDetail = userDetailList.get(0);
+        if (userDetail instanceof VolunteerDetail) {
+            VolunteerDetail volunteerDetail = (VolunteerDetail) userDetail;
+            if (Objects.isNull(volunteerDetail.getNickname())) {
+                volunteerDetail.setNickname(volunteerDetail.getAccount());
+            }
+        }
+
         ObjectMapper mapper = new ObjectMapper();
-        String jsonStr = mapper.writeValueAsString(userDetailList.get(0));
+        String jsonStr = mapper.writeValueAsString(userDetail);
 
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/txt");
