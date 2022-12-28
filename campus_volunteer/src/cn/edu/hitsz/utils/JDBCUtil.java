@@ -103,6 +103,14 @@ public class JDBCUtil {
         }
     }
 
+    public static void setPreStateFloat(PreparedStatement ps, int parameterIndex, float x) {
+        try {
+            ps.setFloat(parameterIndex, x);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static ResultSet executePreStateQuery(PreparedStatement ps) {
         try {
             return ps.executeQuery();
