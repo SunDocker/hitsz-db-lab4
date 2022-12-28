@@ -28,6 +28,11 @@ public class UserDetailService extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String loginAuth = (String) session.getAttribute("loginAuth");
+
+        if (Objects.isNull(loginAuth)) {
+            return;
+        }
+
         String[] authSplit = loginAuth.split(":");
         String table = authSplit[0];
         String account = authSplit[1];

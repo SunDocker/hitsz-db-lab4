@@ -272,6 +272,7 @@
     xhr_user_detail.onreadystatechange = () => {
         if (xhr_user_detail.readyState === 4 && xhr_user_detail.status === 200) {
             const jsonStr = xhr_user_detail.responseText
+            if (!jsonStr) return
             const user_detail = JSON.parse(jsonStr)
 
             const user_detail_table_obj = document.getElementById("user_detail")
